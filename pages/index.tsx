@@ -1,7 +1,9 @@
+import * as React from 'react'
 import Head from 'next/head'
 import { useSWRInfinite } from 'swr'
 
 import PokemonCard from '@/components/pokemon-card'
+import Modal from '@/components/model'
 
 const getKey = (pageIndex, previousPageData) => {
   if (previousPageData) {
@@ -19,6 +21,8 @@ const getKey = (pageIndex, previousPageData) => {
 
 export default function Home() {
   const { data, error, size, setSize, isValidating } = useSWRInfinite(getKey)
+  const [isModalVisble, setIsModalVisble] = React.useState(false)
+  const [activePokemon, setActivePokemon] = React.useState(null)
 
   if (error) {
     console.log(error)
@@ -27,6 +31,12 @@ export default function Home() {
 
   if (!data) {
     return <div>Loading ...</div>
+  }
+
+  function handleClick(pokemon) {
+    console.log(`https://pokeapi.co/api/v2/pokemon/${pokemon.id}/`)
+    setIsModalVisble(true)
+    setActivePokemon(pokemon)
   }
 
   const dataSize = data
@@ -47,11 +57,32 @@ export default function Home() {
 
         <div className="my-8 grid grid-cols-2 sm:grid-cols-3 md:grid-cols-5 gap-12">
           {data.map((pokeData) => {
-            return pokeData.results.map((poke, index) => {
-              return <PokemonCard {...poke} key={index} />
+            return pokeData.results.map((poke) => {
+              return (
+                <PokemonCard
+                  {...poke}
+                  key={poke.id}
+                  onClick={() => handleClick(poke)}
+                />
+              )
             })
           })}
         </div>
+
+        <Modal
+          isOpen={isModalVisble}
+          onModalClose={() => setIsModalVisble(false)}
+        >
+          {activePokemon ? (
+            <div className="flex-grow">
+              <div className="text-sm text-gray-500 font-bold">
+                Active pokemon
+              </div>
+              <h3>{activePokemon.name}</h3>
+            </div>
+          ) : null}
+          <button onClick={() => setIsModalVisble(false)}>Close modal</button>
+        </Modal>
 
         <button
           disabled={isValidating}

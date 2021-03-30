@@ -36,6 +36,7 @@ export default async (req: NextApiRequest, res: NextApiResponse) => {
 
   allData = allData.map(
     ({
+      id,
       name,
       order,
       sprites: {
@@ -47,7 +48,7 @@ export default async (req: NextApiRequest, res: NextApiResponse) => {
       stats,
     }) => {
       const hpStat = stats.find(({ stat: { name } }) => name === 'hp')
-      return { name, order, default_image, types, hpStat }
+      return { id, name, order, default_image, types, hpStat }
     },
   )
 
