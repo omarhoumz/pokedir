@@ -1,35 +1,38 @@
 import * as React from 'react'
 import Head from 'next/head'
-import { useSWRInfinite } from 'swr'
 
 import PokemonCard from '@/components/pokemon-card'
 import Modal from '@/components/model'
 import PokemonModal from '@/components/pokemon-modal'
 
-const getKey = (pageIndex, previousPageData) => {
-  if (previousPageData) {
-    if (!previousPageData.next) {
-      return null
-    }
-
-    const nextUrl = new URL(previousPageData.next).search
-
-    return nextUrl ? `/api/all-pokemon${nextUrl}` : null
-  }
-
-  return `/api/all-pokemon`
-}
-
 export default function Home() {
-  const { data, error, size, setSize, isValidating } = useSWRInfinite(getKey)
+  const [data, setData] = React.useState(null)
+  const [isLoading, setIsLoading] = React.useState(false)
+  const [size, setSize] = React.useState(1)
+  const [nextUrl, setNextUrl] = React.useState(`/api/all-pokemon`)
+
   const [isModalVisble, setIsModalVisble] = React.useState(false)
   const [loadingActivePokemon, setLoadingActivePokemon] = React.useState(false)
   const [activePokemon, setActivePokemon] = React.useState(null)
 
-  if (error) {
-    console.log(error)
-    return <div>There was an error while fetching the data</div>
-  }
+  React.useEffect(() => {
+    setIsLoading(true)
+    fetch(nextUrl)
+      .then((res) => res.json())
+      .then((newData) =>
+        setData((d) => {
+          const nextUrlParams = new URL(newData.next).search
+          setNextUrl(`/api/all-pokemon${nextUrlParams}`)
+          setIsLoading(false)
+          return [...(d ?? []), newData]
+        }),
+      )
+  }, [size])
+
+  // if (error) {
+  //   console.log(error)
+  //   return <div>There was an error while fetching the data</div>
+  // }
 
   if (!data) {
     return loadingElement
@@ -60,7 +63,10 @@ export default function Home() {
       <main className="p-4 max-w-4xl mx-auto">
         <h1 className="text-xl font-bold text-red-500 text-center">PokeDir</h1>
 
-        <div className="my-8 grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 gap-12">
+        <div
+          className="my-8 grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 gap-12"
+          data-testid="cards-wrapper"
+        >
           {data.map((pokeData) => {
             return pokeData.results.map((poke) => {
               return (
@@ -97,13 +103,18 @@ export default function Home() {
         </Modal>
 
         <button
-          disabled={isValidating}
-          onClick={() => setSize(size + 1)}
+          disabled={isLoading}
+          onClick={() => {
+            setSize((size) => {
+              return size + 1
+            })
+          }}
           className={`p-2 bg-gray-100 rounded ${
-            isValidating ? '' : 'cursor-pointer hover:bg-gray-200'
+            isLoading ? 'cursor-default' : 'hover:bg-gray-200'
           }`}
+          data-testid="btn-loadmore"
         >
-          {isValidating ? 'Loading ...' : 'Loadin more'}
+          {isLoading ? 'Loading ...' : 'Load more'}
         </button>
       </main>
 
@@ -125,8 +136,11 @@ const loadingElement = (
       <div className="my-8 grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 gap-12">
         {Array(20)
           .fill(0)
-          .map(() => (
-            <div className="animate-pulse p-3 h-32 bg-gray-50 border-2 border-gray-500 rounded">
+          .map((_, index) => (
+            <div
+              className="animate-pulse p-3 h-32 bg-gray-50 border-2 border-gray-500 rounded"
+              key={index}
+            >
               <h3 className="bg-gray-500 bg-opacity-50 h-5 w-14" />
             </div>
           ))}
