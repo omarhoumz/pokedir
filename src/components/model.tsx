@@ -16,7 +16,17 @@ const modalContext = React.createContext<ModalContextType>({
   onModalClose: () => {},
 })
 
-export default function Modal({ children, isOpen, onModalClose }) {
+export default function Modal({
+  children,
+  isOpen,
+  onModalClose,
+  innerClassname,
+}: {
+  children: React.ReactNode
+  isOpen: boolean
+  onModalClose: () => void
+  innerClassname?: string
+}) {
   React.useEffect(() => {
     function keyListener(e) {
       const listener = keyListenersMap.get(e.keyCode)
@@ -30,6 +40,9 @@ export default function Modal({ children, isOpen, onModalClose }) {
   const modalRef = React.useRef<HTMLDivElement>()
 
   const handleTabKey = (e) => {
+    if (!isOpen) {
+      return
+    }
     const focusableModalElements = modalRef.current.querySelectorAll(
       'a[href], button, textarea, input[type="text"], input[type="radio"], input[type="checkbox"], select',
     ) as NodeListOf<FocusableElements>
@@ -56,9 +69,9 @@ export default function Modal({ children, isOpen, onModalClose }) {
 
   React.useEffect(() => {
     if (isOpen) {
-      document.body.classList.add('overflow-hidden', 'pr-[15px]')
+      document.body.classList.add('overflow-hidden')
     } else {
-      document.body.classList.remove('overflow-hidden', 'pr-[15px]')
+      document.body.classList.remove('overflow-hidden')
     }
   }, [isOpen])
 
@@ -68,12 +81,17 @@ export default function Modal({ children, isOpen, onModalClose }) {
 
   return createPortal(
     <div
-      className="fixed top-0 left-0 w-full h-full bg-gray-100 bg-opacity-70 z-50 p-4"
+      className="fixed top-0 left-0 w-full h-full bg-gray-100 bg-opacity-70 z-50 p-4 overflow-scroll"
       role="dialog"
       aria-modal="true"
     >
       <div
-        className="flex flex-col items-start max-h-full p-4 border border-gray-400 rounded-md bg-white"
+        className={[
+          'flex flex-col items-start max-w-md mx-auto border border-gray-400 rounded-md bg-white animate-fade',
+          innerClassname,
+        ]
+          .filter(Boolean)
+          .join(' ')}
         ref={modalRef}
       >
         <modalContext.Provider value={{ onModalClose }}>

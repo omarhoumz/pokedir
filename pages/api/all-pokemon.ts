@@ -17,40 +17,46 @@ export default async (req: NextApiRequest, res: NextApiResponse) => {
     res.status(500).json({ code: -1, message: 'Error while fetching data' })
   }
 
-  const pokemonPromises = []
-
-  pokeData.results.forEach(({ url }) => {
-    pokemonPromises.push(fetch(url).then((res) => res.json()))
-  })
-
   let allData = null
   try {
-    allData = await Promise.all(pokemonPromises)
+    allData = await Promise.all(
+      pokeData.results.map(async ({ url }) => {
+        const poke = await (await fetch(url)).json()
+
+        const {
+          id,
+          name,
+          order,
+          sprites: {
+            other: {
+              dream_world: { front_default: default_image },
+            },
+          },
+          types,
+          stats,
+          species: { url: speciesUrl },
+        } = poke
+
+        let color = 'gray'
+        try {
+          const species = await (await fetch(speciesUrl)).json()
+          color = species.color.name
+        } catch {
+          console.log(url)
+          // ignore
+        }
+
+        return { id, name, order, default_image, types, stats, url, color }
+      }),
+    )
   } catch (error) {
     console.error(error)
   }
 
   if (!allData) {
     res.status(500).json({ code: -1, message: 'Error while fetching data' })
+    return
   }
-
-  allData = allData.map(
-    ({
-      id,
-      name,
-      order,
-      sprites: {
-        other: {
-          dream_world: { front_default: default_image },
-        },
-      },
-      types,
-      stats,
-    }) => {
-      const hpStat = stats.find(({ stat: { name } }) => name === 'hp')
-      return { id, name, order, default_image, types, hpStat }
-    },
-  )
 
   pokeData.results = allData
 

@@ -4,6 +4,7 @@ import { useSWRInfinite } from 'swr'
 
 import PokemonCard from '@/components/pokemon-card'
 import Modal from '@/components/model'
+import PokemonModal from '@/components/pokemon-modal'
 
 const getKey = (pageIndex, previousPageData) => {
   if (previousPageData) {
@@ -22,6 +23,7 @@ const getKey = (pageIndex, previousPageData) => {
 export default function Home() {
   const { data, error, size, setSize, isValidating } = useSWRInfinite(getKey)
   const [isModalVisble, setIsModalVisble] = React.useState(false)
+  const [loadingActivePokemon, setLoadingActivePokemon] = React.useState(false)
   const [activePokemon, setActivePokemon] = React.useState(null)
 
   if (error) {
@@ -30,32 +32,35 @@ export default function Home() {
   }
 
   if (!data) {
-    return <div>Loading ...</div>
+    return loadingElement
   }
 
-  function handleClick(pokemon) {
-    console.log(`https://pokeapi.co/api/v2/pokemon/${pokemon.id}/`)
+  async function handleClick(pokemon) {
+    const url = `/api/pokemon/${pokemon.id}`
+    setLoadingActivePokemon(true)
     setIsModalVisble(true)
-    setActivePokemon(pokemon)
+
+    const pokem = await (await fetch(url)).json()
+    setActivePokemon(pokem)
+    setLoadingActivePokemon(false)
   }
 
-  const dataSize = data
-    .map((p) => p.results.length)
-    .reduce((prev, curr) => curr + prev, 0)
+  function handleCloseModal() {
+    setIsModalVisble(false)
+    setActivePokemon(null)
+  }
 
   return (
     <div>
       <Head>
-        <title>PokeDir ({dataSize})</title>
+        <title>PokeDir</title>
         <link rel="icon" href="/favicon.ico" />
       </Head>
 
-      <main className="p-4">
-        <h1 className="text-xl font-bold text-red-500 text-center">
-          PokeDir ({dataSize})
-        </h1>
+      <main className="p-4 max-w-4xl mx-auto">
+        <h1 className="text-xl font-bold text-red-500 text-center">PokeDir</h1>
 
-        <div className="my-8 grid grid-cols-2 sm:grid-cols-3 md:grid-cols-5 gap-12">
+        <div className="my-8 grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 gap-12">
           {data.map((pokeData) => {
             return pokeData.results.map((poke) => {
               return (
@@ -71,17 +76,24 @@ export default function Home() {
 
         <Modal
           isOpen={isModalVisble}
-          onModalClose={() => setIsModalVisble(false)}
+          onModalClose={handleCloseModal}
+          innerClassname={
+            activePokemon ? `bg-${activePokemon.color}-400` : null
+          }
         >
-          {activePokemon ? (
-            <div className="flex-grow">
-              <div className="text-sm text-gray-500 font-bold">
-                Active pokemon
-              </div>
-              <h3>{activePokemon.name}</h3>
-            </div>
+          <button
+            className={`m-4 self-end px-2 rounded-full bg-opacity-40 ${
+              activePokemon
+                ? `text-${activePokemon.color}-800 bg-${activePokemon.color}-50`
+                : null
+            }`}
+            onClick={handleCloseModal}
+          >
+            Close Info
+          </button>
+          {activePokemon || loadingActivePokemon ? (
+            <PokemonModal {...activePokemon} isLoading={loadingActivePokemon} />
           ) : null}
-          <button onClick={() => setIsModalVisble(false)}>Close modal</button>
         </Modal>
 
         <button
@@ -91,7 +103,7 @@ export default function Home() {
             isValidating ? '' : 'cursor-pointer hover:bg-gray-200'
           }`}
         >
-          {isValidating ? 'Loading ...' : 'Loadin more'} {size}
+          {isValidating ? 'Loading ...' : 'Loadin more'}
         </button>
       </main>
 
@@ -99,3 +111,26 @@ export default function Home() {
     </div>
   )
 }
+
+const loadingElement = (
+  <div>
+    <Head>
+      <title>Loading ... - PokeDir</title>
+      <link rel="icon" href="/favicon.ico" />
+    </Head>
+
+    <main className="p-4 max-w-4xl mx-auto">
+      <h1 className="text-xl font-bold text-red-500 text-center">PokeDir</h1>
+
+      <div className="my-8 grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 gap-12">
+        {Array(20)
+          .fill(0)
+          .map(() => (
+            <div className="animate-pulse p-3 h-32 bg-gray-50 border-2 border-gray-500 rounded">
+              <h3 className="bg-gray-500 bg-opacity-50 h-5 w-14" />
+            </div>
+          ))}
+      </div>
+    </main>
+  </div>
+)
