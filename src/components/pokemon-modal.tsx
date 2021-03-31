@@ -31,7 +31,10 @@ export default function PokemonModal({
         {types
           .map(({ type }) => type)
           .map(({ name }) => (
-            <span className="text-sm text-gray-600 font-semibold capitalize py-1 px-2 rounded-full bg-gray-100 bg-opacity-30">
+            <span
+              key={name}
+              className="text-sm text-gray-600 font-semibold capitalize py-1 px-2 rounded-full bg-gray-100 bg-opacity-30"
+            >
               {name}
             </span>
           ))}
@@ -46,7 +49,7 @@ export default function PokemonModal({
               name,
             }))
             .map(({ name, stat }) => (
-              <div className="grid grid-cols-2 gap-2 items-baseline">
+              <div className="grid grid-cols-2 gap-2 items-baseline" key={name}>
                 <span className="uppercase font-bold text-sm text-gray-600">
                   {name}
                 </span>
@@ -75,8 +78,11 @@ const loadingCard = (
         <h5 className="text-sm mb-2">Stats</h5>
         {Array(6)
           .fill(0)
-          .map(() => (
-            <div className="h-7 grid grid-cols-2 gap-2 items-center">
+          .map((_, index) => (
+            <div
+              className="h-7 grid grid-cols-2 gap-2 items-center"
+              key={index}
+            >
               <span className="h-3 w-12 bg-gray-400" />
               <span className="h-4 w-10 bg-gray-700" />
             </div>
