@@ -4,6 +4,7 @@ import Head from 'next/head'
 import PokemonCard from '@/components/pokemon-card'
 import Modal from '@/components/model'
 import PokemonModal from '@/components/pokemon-modal'
+import PokeballSvg from '@/components/pokeball-svg'
 
 export default function Home() {
   const [data, setData] = React.useState(null)
@@ -78,6 +79,7 @@ export default function Home() {
               )
             })
           })}
+          {isLoading ? <CardsLoading repeat={3} /> : null}
         </div>
 
         <Modal
@@ -134,17 +136,26 @@ const loadingElement = (
       <h1 className="text-xl font-bold text-red-500 text-center">PokeDir</h1>
 
       <div className="my-8 grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 gap-12">
-        {Array(20)
-          .fill(0)
-          .map((_, index) => (
-            <div
-              className="animate-pulse p-3 h-32 bg-gray-50 border-2 border-gray-500 rounded"
-              key={index}
-            >
-              <h3 className="bg-gray-500 bg-opacity-50 h-5 w-14" />
-            </div>
-          ))}
+        <CardsLoading repeat={20} />
       </div>
     </main>
   </div>
 )
+
+function CardsLoading({ repeat = 4 }) {
+  return (
+    <>
+      {Array(repeat)
+        .fill(0)
+        .map((_, index) => (
+          <div
+            className="relative animate-pulse p-3 h-32 bg-gray-50 border-2 border-gray-500 rounded"
+            key={index}
+          >
+            <h3 className="bg-gray-500 bg-opacity-50 h-5 w-14" />
+            <PokeballSvg className="absolute bottom-2 right-2 w-16 h-16 text-gray-200" />
+          </div>
+        ))}
+    </>
+  )
+}

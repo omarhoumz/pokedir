@@ -3,7 +3,7 @@ const colors = require('tailwindcss/colors')
 const pokeColors = [
   'black',
   'blue',
-  'brow',
+  'brown',
   'gray',
   'green',
   'pink',
@@ -26,26 +26,27 @@ const borderShades = getClasses(pokeColors, ['500'], ['border'])
 const focusRingShades = getClasses(pokeColors, ['200'], ['focus:ring'])
 const bgShades = getClasses(pokeColors, ['50', '400'], ['bg'])
 const textShades = getClasses(pokeColors, ['700', '800'], ['text'])
+const pokeSafeList = [
+  ...borderShades,
+  ...bgShades,
+  ...textShades,
+  ...focusRingShades,
+]
 
 module.exports = {
   purge: {
     content: ['./pages/**/*.{js,ts,jsx,tsx}', './src/**/*.{js,ts,jsx,tsx}'],
     options: {
-      safelist: [
-        ...borderShades,
-        ...bgShades,
-        ...textShades,
-        ...focusRingShades,
-        'animation-fade',
-      ],
+      safelist: [...pokeSafeList, 'animation-fade'],
     },
   },
   darkMode: false,
   theme: {
     extend: {
       colors: {
-        brown: colors.amber,
+        brown: colors.orange,
         'white-400': colors.blueGray[400],
+        white: '#fff',
       },
       animation: {
         fade: 'fade 0.3s ease-in-out',

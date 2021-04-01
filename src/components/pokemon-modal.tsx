@@ -1,4 +1,5 @@
 import * as React from 'react'
+import PokeballSvg from './pokeball-svg'
 
 type IProps = {
   name: string
@@ -73,7 +74,9 @@ const loadingCard = (
       <span className="h-7 w-14 px-2 rounded-full bg-gray-100 bg-opacity-30" />
     </div>
     <div>
-      <div className="relative z-10 h-28 w-28 rounded-full bg-gray-500 bg-opacity-70 mx-auto -mb-4" />
+      <div className="relative z-10 h-28 w-28 flex justify-center items-center rounded-full mx-auto -mb-4">
+        <PokeballSvg className="w-full h-full text-gray-200" />
+      </div>
       <div className="py-8 px-4 bg-white rounded-3xl rounded-b shadow-lg">
         <h5 className="text-sm mb-2">Stats</h5>
         {Array(6)
