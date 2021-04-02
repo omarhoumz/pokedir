@@ -158,6 +158,26 @@ export default function PokemonDirectory() {
     getPokemonData(dispatch, null, true)
   }, [])
 
+  React.useEffect(() => {
+    const footer = document.getElementById('footer')
+
+    const onIntersection: IntersectionObserverCallback = ([
+      { isIntersecting },
+    ]) => {
+      if (isIntersecting && loadingState !== States.loadmoreInitiated) {
+        getPokemonData(dispatch, nextUrl)
+      }
+    }
+
+    const io = new IntersectionObserver(onIntersection, { threshold: 1 })
+
+    io.observe(footer)
+
+    return () => {
+      io.unobserve(footer)
+    }
+  }, [nextUrl])
+
   async function handleClick(pokemon) {
     const url = `/api/pokemon/${pokemon.id}`
     dispatch({ type: States.loadPokemonInfoInit })
