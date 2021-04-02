@@ -40,12 +40,12 @@ module.exports = {
       safelist: [...pokeSafeList, 'animation-fade'],
     },
   },
-  darkMode: false,
+  darkMode: 'media',
   theme: {
     extend: {
       colors: {
         brown: colors.orange,
-        'white-400': colors.blueGray[400],
+        'white-400': colors.blueGray[200],
         white: '#fff',
       },
       animation: {

@@ -6,4 +6,15 @@
   .filter-shadow {
     filter: drop-shadow(0 0.3rem 0.2rem rgba(0, 0, 0, 0.16));
   }
+  .pr-3\.75  {
+    padding-right: 0.8rem;
+  }
+}
+
+body {
+  @apply dark:bg-gray-800 dark:text-gray-50;
+}
+
+#__next {
+  @apply flex flex-col min-h-screen;
 }
