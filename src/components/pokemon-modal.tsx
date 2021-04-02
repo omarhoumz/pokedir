@@ -79,8 +79,8 @@ const loadingCard = (
       <div className="relative z-10 h-32 w-32 flex justify-center items-center rounded-full mx-auto -mb-4">
         <PokeballSvg className="w-full h-full text-gray-200" />
       </div>
-      <div className="py-8 px-4 bg-white rounded-3xl rounded-b shadow-lg">
-        <h5 className="text-sm mb-2">Stats</h5>
+      <div className="py-8 px-4 bg-white dark:bg-gray-800 rounded-3xl rounded-b shadow-lg">
+        <h5 className="text-sm dark:text-gray-400 mb-2">Stats</h5>
         {Array(6)
           .fill(0)
           .map((_, index) => (

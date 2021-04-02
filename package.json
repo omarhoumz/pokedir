@@ -6,9 +6,11 @@
     "dev": "next dev",
     "build": "next build",
     "start": "next start",
-    "test": "jest",
     "cypress:open": "cypress open",
-    "cypress:run": "cypress run"
+    "cypress:run": "cypress run",
+    "test:e2e": "yarn cypress:run",
+    "test:unit": "jest",
+    "test": "yarn test:unit && yarn test:e2e"
   },
   "dependencies": {
     "next": "10.1.1",
