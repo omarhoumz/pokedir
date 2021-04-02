@@ -41,9 +41,9 @@ export default function PokemonModal({
           ))}
       </div>
       <div>
-        <img src={default_image} alt={name} className="h-28 mx-auto -mb-4" />
-        <div className="py-8 px-4 bg-white rounded-3xl rounded-b shadow-lg">
-          <h5 className="text-sm mb-2">Stats</h5>
+        <img src={default_image} alt={name} className="h-32 mx-auto -mb-4" />
+        <div className="py-8 px-4 bg-white dark:bg-gray-800 rounded-3xl rounded-b shadow-lg">
+          <h5 className="text-sm mb-2 dark:text-gray-400">Stats</h5>
           {stats
             .map(({ base_stat: stat, stat: { name } }) => ({
               stat,
@@ -51,10 +51,12 @@ export default function PokemonModal({
             }))
             .map(({ name, stat }) => (
               <div className="grid grid-cols-2 gap-2 items-baseline" key={name}>
-                <span className="uppercase font-bold text-sm text-gray-600">
+                <span className="uppercase font-bold text-sm text-gray-600 dark:text-gray-400">
                   {name}
                 </span>
-                <span className="text-xl text-gray-900">{stat}</span>
+                <span className="text-xl text-gray-900 dark:text-gray-300">
+                  {stat}
+                </span>
               </div>
             ))}
         </div>
@@ -74,7 +76,7 @@ const loadingCard = (
       <span className="h-7 w-14 px-2 rounded-full bg-gray-100 bg-opacity-30" />
     </div>
     <div>
-      <div className="relative z-10 h-28 w-28 flex justify-center items-center rounded-full mx-auto -mb-4">
+      <div className="relative z-10 h-32 w-32 flex justify-center items-center rounded-full mx-auto -mb-4">
         <PokeballSvg className="w-full h-full text-gray-200" />
       </div>
       <div className="py-8 px-4 bg-white rounded-3xl rounded-b shadow-lg">

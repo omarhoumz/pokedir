@@ -81,7 +81,7 @@ export default function Modal({
 
   return createPortal(
     <div
-      className="fixed top-0 left-0 w-full h-full bg-gray-100 bg-opacity-70 z-50 p-4 overflow-scroll"
+      className="fixed top-0 left-0 w-full h-full bg-gray-100 dark:bg-gray-800 bg-opacity-70 z-50 p-4 overflow-scroll"
       role="dialog"
       aria-modal="true"
     >

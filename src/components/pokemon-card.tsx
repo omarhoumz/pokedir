@@ -14,7 +14,7 @@ export default function PokemonCard({
   return (
     <button
       onClick={onClick}
-      className={`relative flex flex-col items-start justify-items-start text-left p-3 h-32 border-2 border-${color}-500 rounded focus:outline-none focus:ring focus:ring-${color}-200`}
+      className={`relative flex flex-col items-start justify-items-start text-left p-3 h-32 border-2 border-${color}-500 rounded focus:outline-none focus:ring focus:ring-${color}-200 dark:focus:ring-${color}-300`}
     >
       <h3 className={`font-bold text-${color}-700 capitalize`}>{name}</h3>
       <div className="absolute -bottom-2 -right-2 w-24 h-24">

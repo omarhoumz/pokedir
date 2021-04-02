@@ -2,7 +2,7 @@ import * as React from 'react'
 import Head from 'next/head'
 
 import PokemonCard from '@/components/pokemon-card'
-import Modal from '@/components/model'
+import Modal from '@/components/modal'
 import PokemonModal from '@/components/pokemon-modal'
 import PokeballSvg from '@/components/pokeball-svg'
 
@@ -20,14 +20,13 @@ export default function Home() {
     setIsLoading(true)
     fetch(nextUrl)
       .then((res) => res.json())
-      .then((newData) =>
-        setData((d) => {
-          const nextUrlParams = new URL(newData.next).search
-          setNextUrl(`/api/all-pokemon${nextUrlParams}`)
-          setIsLoading(false)
-          return [...(d ?? []), newData]
-        }),
-      )
+      .then((newData) => {
+        const nextUrlParams = new URL(newData.next).search
+        setNextUrl(`/api/all-pokemon${nextUrlParams}`)
+        setIsLoading(false)
+
+        setData((d) => [...(d ?? []), newData])
+      })
   }, [size])
 
   // if (error) {
@@ -106,11 +105,7 @@ export default function Home() {
 
         <button
           disabled={isLoading}
-          onClick={() => {
-            setSize((size) => {
-              return size + 1
-            })
-          }}
+          onClick={() => setSize((size) => size + 1)}
           className={`p-2 bg-gray-100 rounded ${
             isLoading ? 'cursor-default' : 'hover:bg-gray-200'
           }`}
