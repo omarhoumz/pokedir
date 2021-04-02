@@ -194,7 +194,7 @@ export default function PokemonDirectory() {
   return (
     <div>
       <PokemonList
-        isLoading={loadingState === States.initialLoad}
+        isLoading={isLoading}
         data={data.map((pokeData) => pokeData.results).flat()}
         onClickPokemon={handleClick}
       />
@@ -229,7 +229,7 @@ export default function PokemonDirectory() {
         data-testid="btn-loadmore"
         onClick={() => getPokemonData(dispatch, nextUrl)}
       >
-        Load more
+        {isLoading ? 'Loading ...' : 'Load more'}
       </button>
     </div>
   )
