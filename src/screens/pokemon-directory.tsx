@@ -80,7 +80,7 @@ function reducer(state: State = initialState, action: Action): State {
       return {
         ...state,
         loadingState: States.loadmoreDone,
-        data: [...state.data, action.pokemonData],
+        data: [...(state.data ?? []), action.pokemonData],
         nextUrl: action.nextUrl,
         error: action.error,
       }
@@ -173,8 +173,6 @@ export default function PokemonDirectory() {
   function handleCloseModal() {
     dispatch({ type: States.closePokemonInfo })
   }
-
-  console.log(data)
 
   if (!data) {
     return loadingElement
